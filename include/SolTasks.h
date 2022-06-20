@@ -19,9 +19,10 @@ void sunsetCallback();
 
 Scheduler scheduler;
 
-Task fetch_sun_times_task(86400 * 1000, TASK_FOREVER, &displayCallback,
+Task fetch_sun_times_task(TASK_HOUR * 24, TASK_FOREVER, &fetchSunTimesCallback,
                           &scheduler, true);
-Task display_task(1000, TASK_FOREVER, &displayCallback, &scheduler, true);
+Task display_task(TASK_SECOND, TASK_FOREVER, &displayCallback, &scheduler,
+                  true);
 Task sunrise_task(TASK_IMMEDIATE, 1, &sunriseCallback, &scheduler, false);
 Task sunset_task(TASK_IMMEDIATE, 1, &sunsetCallback, &scheduler, false);
 
@@ -38,8 +39,8 @@ void displayCallback() {
 }
 
 void fetchSunTimesCallback() {
-    Serial.println("[EVENT]: fetchSunTime at ");
-    Serial.print(timeClient.getFormattedTime());
+    Serial.print("[EVENT]: fetchSunTime at ");
+    Serial.println(timeClient.getFormattedTime());
 
     const String LAT = "-26.304516";
     const String LON = "-48.843380";
@@ -72,16 +73,22 @@ void fetchSunTimesCallback() {
 
 void sunriseCallback() {
     Serial.print("[EVENT]: sunrise at ");
-    Serial.print(timeClient.getFormattedTime());
+    Serial.println(timeClient.getFormattedTime());
 
     msg = "sunrise!!!";
+
+    sunrise_task.disable();
+    sunrise_task.setIterations(sunrise_task.getIterations() + 1);
 }
 
 void sunsetCallback() {
     Serial.print("[EVENT]: sunset at ");
-    Serial.print(timeClient.getFormattedTime());
+    Serial.println(timeClient.getFormattedTime());
 
     msg = "sunset :)";
+
+    sunset_task.disable();
+    sunset_task.setIterations(sunset_task.getIterations() + 1);
 }
 
 #endif

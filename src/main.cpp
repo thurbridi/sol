@@ -19,9 +19,6 @@ void setup() {
         };
     }
 
-    display.clearDisplay();
-    display.display();
-
     gotIpEventHandler =
         WiFi.onStationModeGotIP([](const WiFiEventStationModeGotIP &event) {
             Serial.print("Station connected, IP: ");
@@ -41,9 +38,6 @@ void setup() {
 
     timeClient.begin();
     timeClient.update();
-
-    scheduler.init();
-    scheduler.startNow();
 }
 
 void loop() { scheduler.execute(); }
