@@ -38,6 +38,8 @@ void setup() {
 
     timeClient.begin();
     timeClient.update();
+
+    led.begin();
 }
 
 void loop() { scheduler.execute(); }
